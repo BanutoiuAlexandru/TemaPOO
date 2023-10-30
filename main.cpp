@@ -260,7 +260,6 @@ int main() {
                 fisierUtilizatoriOut << numeUtilizator << " " << parolaUtilizator << " " << balantaNoua << std::endl;
                 fisierUtilizatoriOut.close();
                 std::cout << "Cont creat cu succes!\n";
-                std::cout << "Numele utilizatorului este: " << it->second.getNume() << std::endl;
             } else {
                 std::cout << "Numele de utilizator este deja folosit. Va rugam sa alegeti alt nume de utilizator!\n";
             }

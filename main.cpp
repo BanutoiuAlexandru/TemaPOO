@@ -4,6 +4,7 @@
 #include <map>
 #include <fstream>
 #include <sstream>
+#include <limits>
 //#include <algorithm>
 
 class Utilizator {
@@ -19,7 +20,7 @@ public:
     Utilizator(const Utilizator& other) = default;
     ~Utilizator() = default;
 
-    [[nodiscard]] const std::string& getNume() const {
+    [[nodiscard]] const std::string& getNume() const  {
         return nume;
     }
 
@@ -82,9 +83,8 @@ public:
 int main() {
     std::vector<Utilizator> utilizatori;
     std::map<std::string, Utilizator> utilizatoriMap;
-    std::ifstream fisierUtilizatoriIn("utilizatori.txt");  // Deschide fișierul pentru citire
-    std::ofstream fisierUtilizatoriOut("utilizatori.txt", std::ios_base::app);  // Deschide fișierul pentru scriere, fără să șteargă conținutul existent
-
+    std::ifstream fisierUtilizatoriIn("utilizatori.txt");
+    std::ofstream fisierUtilizatoriOut("utilizatori.txt", std::ios_base::app);
 
 
 
@@ -133,6 +133,7 @@ int main() {
                         std::cout << "Logare cu succes! Bine ati venit, " << numeUtilizator << "!\n";
 
                         while (true) {
+                            std::cout << "Numele utilizatorului este: " << it->second.getNume() << std::endl;
                             std::cout << "1. Vezi toate jocurile disponibile\n";
                             std::cout << "2. Cumpara joc\n";
                             std::cout << "3. Vezi balanta\n";
@@ -166,25 +167,36 @@ int main() {
                                 std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
                             } else if (optiune == 4) {
                                 std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
+                                bool sumaValida = false;
                                 double suma;
                                 std::cin >> suma;
 
-                                bool sumaValida = false;
-
                                 while (!sumaValida) {
-                                    std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
                                     std::string input;
+                                    std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
                                     std::cin >> input;
 
                                     try {
-                                        suma = std::stod(input);
-                                        sumaValida = true;
+                                        size_t pos;
+                                        suma = std::stod(input, &pos);
+
+                                        if (pos == input.size()) {
+                                            // Verificam dacă toate caracterele din input sunt convertite la numar
+                                            sumaValida = true;
+                                        } else {
+                                            std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
+                                        }
                                     } catch (const std::invalid_argument& e) {
                                         std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
                                     } catch (const std::out_of_range& e) {
                                         std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
                                     }
+
+                                    // Curatam buffer ul de intrare pentru a evita bucle nedorite
+                                    std::cin.clear();
+                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                                 }
+
 
 
                                 it->second.adaugaBani(suma);
@@ -206,27 +218,35 @@ int main() {
         }     if (optiune == 2) {
             std::string numeUtilizator, parolaUtilizator;
             double balantaNoua;
-            std::cout << "Introduceti numele de utilizator: ";
-            std::cin >> numeUtilizator;
 
             bool balantaValida = false;
 
             while (!balantaValida) {
-                std::cout << "Introduceti balanta initiala: ";
                 std::string input;
+                std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
                 std::cin >> input;
 
                 try {
-                    balantaNoua = std::stod(input);
-                    balantaValida = true;
+                    size_t pos;
+                    balanta = std::stod(input, &pos);
+
+                    if (pos == input.size()) {
+                        balantaValida = true;
+                    } else {
+                        std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
+                    }
                 } catch (const std::invalid_argument& e) {
                     std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
                 } catch (const std::out_of_range& e) {
                     std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
                 }
+
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
 
-
+            std::cout << "Introduceti numele de utilizator: ";
+            std::cin >> numeUtilizator;
             auto it = utilizatoriMap.find(numeUtilizator);
             if (it == utilizatoriMap.end()) {
                 std::cout << "Introduceti parola: ";
@@ -240,6 +260,7 @@ int main() {
                 fisierUtilizatoriOut << numeUtilizator << " " << parolaUtilizator << " " << balantaNoua << std::endl;
                 fisierUtilizatoriOut.close();
                 std::cout << "Cont creat cu succes!\n";
+                std::cout << "Numele utilizatorului este: " << it->second.getNume() << std::endl;
             } else {
                 std::cout << "Numele de utilizator este deja folosit. Va rugam sa alegeti alt nume de utilizator!\n";
             }

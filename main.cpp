@@ -6,7 +6,7 @@
 #include <sstream>
 #include <limits>
 //#include <algorithm>
-
+// :)
 class Utilizator {
 private:
     std::string nume;

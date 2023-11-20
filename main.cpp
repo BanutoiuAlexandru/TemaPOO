@@ -161,7 +161,7 @@ int main() {
     fisierJocuri.close();
 
     int optiune = 0;
-    do {
+    do{
         std::cout << "1. Logare\n";
         std::cout << "2. Creare cont\n";
         std::cout << "3. Afisare jocuri disponibile\n";
@@ -176,7 +176,6 @@ int main() {
 
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (optiune >= 1 && optiune <= 4) {
             if (optiune == 1) {
                 std::string numeUtilizator, parolaUtilizator;
                 std::cout << "Introduceti numele de utilizator: ";
@@ -188,7 +187,6 @@ int main() {
                 if (it != utilizatoriMap.end() && it->second.getParola() == parolaUtilizator) {
                     std::cout << "Logare cu succes! Bine ati venit, " << numeUtilizator << "!\n";
 
-                    int optiuni = 0;
                     while (true) {
                         std::cout << "Numele utilizatorului este: " << it->second.getNume() << std::endl;
                         std::cout << "1. Vezi toate jocurile disponibile\n";
@@ -197,11 +195,11 @@ int main() {
                         std::cout << "4. Adauga fonduri\n";
                         std::cout << "5. Afiseaza jocurile cumparate\n";
                         std::cout << "6. Exit\n";
-                        std::cin >> optiuni;
+                        std::cin >> optiune;
 
-                        if (optiuni == 1) {
+                        if (optiune == 1) {
                             magazin.afiseazaJocuri();
-                        } else if (optiuni == 2) {
+                        } else if (optiune == 2) {
                             magazin.afiseazaJocuri();
                             std::cout << "Introduceti numarul jocului pe care doriti sa il cumparati: ";
                             int indexJoc;
@@ -221,10 +219,10 @@ int main() {
                             } else {
                                 std::cout << "Optiune invalida.\n";
                             }
-                        } else if (optiuni == 3) {
+                        } else if (optiune == 3) {
                             std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
                             std::cout << "Balanta dumneavoastra: " << it->second.getBalantaFantoma() << std::endl;
-                        } else if (optiuni == 4) {
+                        } else if (optiune == 4) {
                             do {
                                 std::string input;
                                 std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
@@ -253,9 +251,9 @@ int main() {
                             const double suma=0.0;
                             it->second.adaugaBani(suma);
                             std::cout << "Balanta actualizata cu succes.\n";
-                        } else if (optiuni == 5) {
+                        } else if (optiune == 5) {
                             it->second.afiseazaJocuriCumparate();
-                        } else if (optiuni == 6) {
+                        } else if (optiune == 6) {
                             break;
                         } else {
                             std::cout << "Optiune invalida.\n";
@@ -318,8 +316,7 @@ int main() {
             } else {
                 std::cout << "Optiune invalida. Va rugam sa alegeti o optiune valida!\n";
             }
-        }
-    } while (optiune != 4);
+        }while (optiune != 4);
 
     fisierUtilizatoriIn.close();
     fisierUtilizatoriOut.close();

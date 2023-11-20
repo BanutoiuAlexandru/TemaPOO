@@ -3,39 +3,7 @@
 #include <vector>
 #include <map>
 #include <fstream>
-#include <sstream>
 #include <limits>
-//#include <algorithm>
-// :)
-class Utilizator {
-private:
-    std::string nume;
-    std::string parola;
-    double balanta;
-
-public:
-    Utilizator() : nume(), parola(), balanta(0.0) {}
-    Utilizator( std::string& nume, std::string& parola, double balanta)
-            : nume(nume), parola(parola), balanta(balanta) {}
-    Utilizator(const Utilizator& other) = default;
-    ~Utilizator() = default;
-
-    [[nodiscard]] const std::string& getNume() const  {
-        return nume;
-    }
-
-    [[nodiscard]] const std::string& getParola() const {
-        return parola;
-    }
-
-    [[nodiscard]] double getBalanta() const {
-        return balanta;
-    }
-
-    void adaugaBani(double suma) {
-        balanta += suma;
-    }
-};
 
 class JocVideo {
 private:
@@ -50,11 +18,86 @@ public:
         return nume;
     }
 
-    [[nodiscard]]double getPret() const {
+    [[nodiscard]] double getPret() const {
         return pret;
     }
+
+    friend std::ostream& operator<<(std::ostream& out, const JocVideo& joc);
 };
 
+std::ostream& operator<<(std::ostream& out, const JocVideo& joc) {
+    out << "Nume Joc: " << joc.getNume() << ", Pret: " << joc.getPret();
+    return out;
+}
+
+class Utilizator {
+private:
+    std::string nume;
+    std::string parola;
+    double balanta;
+    double* balantaFantoma;
+
+public:
+    Utilizator() : nume(), parola(), balanta(0.0), balantaFantoma(nullptr) {}
+
+    Utilizator(std::string& nume, std::string& parola, double balanta)
+            : nume(nume), parola(parola), balanta(balanta), balantaFantoma(nullptr) {}
+
+    Utilizator(const Utilizator& other)
+            : nume(other.nume), parola(other.parola), balanta(other.balanta),
+              balantaFantoma(other.balantaFantoma ? new double(*(other.balantaFantoma)) : nullptr) {}
+
+    ~Utilizator() {
+        delete balantaFantoma;
+    }
+
+    Utilizator& operator=(const Utilizator& other) {
+        if (this != &other) {
+            nume = other.nume;
+            parola = other.parola;
+            balanta = other.balanta;
+
+            delete balantaFantoma;
+
+            balantaFantoma = (other.balantaFantoma ? new double(*(other.balantaFantoma)) : nullptr);
+        }
+        return *this;
+    }
+
+    [[nodiscard]] const std::string& getNume() const {
+        return nume;
+    }
+
+    [[nodiscard]] const std::string& getParola() const {
+        return parola;
+    }
+
+    [[nodiscard]] double getBalanta() const {
+        return balanta;
+    }
+
+    [[maybe_unused]] [[nodiscard]] const double* getBalantaFantoma() const {
+        return balantaFantoma;
+    }
+
+    void adaugaBani(double suma) {
+        balanta += suma;
+    }
+
+    void adaugaJocCumparat([[maybe_unused]] const JocVideo& joc) {
+    }
+
+    void afiseazaJocuriCumparate() const {
+    }
+
+    friend std::ostream& operator<<(std::ostream& out, const Utilizator& utilizator);
+};
+
+std::ostream& operator<<(std::ostream& out, const Utilizator& utilizator) {
+    out << "Nume: " << utilizator.getNume() << ", Parola: " << utilizator.getParola()
+        << ", Balanta: " << utilizator.getBalanta();
+    return out;
+}
 class Magazin {
 private:
     std::vector<JocVideo> jocuriDisponibile;
@@ -63,6 +106,7 @@ public:
     [[nodiscard]] const std::vector<JocVideo>& getJocuriDisponibile() const {
         return jocuriDisponibile;
     }
+
     void adaugaJoc(const JocVideo& joc) {
         jocuriDisponibile.push_back(joc);
     }
@@ -78,15 +122,23 @@ public:
     [[nodiscard]] const JocVideo& getJoc(int index) const {
         return jocuriDisponibile[index];
     }
+
+    friend std::ostream& operator<<(std::ostream& out, const Magazin& magazin);
 };
+
+std::ostream& operator<<(std::ostream& out, const Magazin& magazin) {
+    out << "Jocuri Disponibile:\n";
+    for (const auto& joc : magazin.getJocuriDisponibile()) {
+        out << joc << std::endl;
+    }
+    return out;
+}
 
 int main() {
     std::vector<Utilizator> utilizatori;
     std::map<std::string, Utilizator> utilizatoriMap;
     std::ifstream fisierUtilizatoriIn("utilizatori.txt");
     std::ofstream fisierUtilizatoriOut("utilizatori.txt", std::ios_base::app);
-
-
 
     std::ifstream fisierUtilizatori("utilizatori.txt");
     std::string nume, parola;
@@ -108,168 +160,165 @@ int main() {
     }
     fisierJocuri.close();
 
-    while (true) {
+    int optiune = 0;
+    do {
         std::cout << "1. Logare\n";
         std::cout << "2. Creare cont\n";
-        std::cout << "3. Exit\n";
+        std::cout << "3. Afisare jocuri disponibile\n";
+        std::cout << "4. Exit\n";
 
-        std::string optiuneStr;
-        std::getline(std::cin, optiuneStr);
+        if (!(std::cin >> optiune)) {
+            std::cout << "Eroare! Introduceti un numar valid.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
 
-        int optiune;
-        std::istringstream ss(optiuneStr);
-        if (ss >> optiune) {
-            if (optiune >= 1 && optiune <= 3) {
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-                if (optiune == 1) {
-                    std::string numeUtilizator, parolaUtilizator;
-                    std::cout << "Introduceti numele de utilizator: ";
-                    std::cin >> numeUtilizator;
-                    std::cout << "Introduceti parola: ";
-                    std::cin >> parolaUtilizator;
+        if (optiune >= 1 && optiune <= 4) {
+            if (optiune == 1) {
+                std::string numeUtilizator, parolaUtilizator;
+                std::cout << "Introduceti numele de utilizator: ";
+                std::cin >> numeUtilizator;
+                std::cout << "Introduceti parola: ";
+                std::cin >> parolaUtilizator;
 
-                    auto it = utilizatoriMap.find(numeUtilizator);
-                    if (it != utilizatoriMap.end() && it->second.getParola() == parolaUtilizator) {
-                        std::cout << "Logare cu succes! Bine ati venit, " << numeUtilizator << "!\n";
+                auto it = utilizatoriMap.find(numeUtilizator);
+                if (it != utilizatoriMap.end() && it->second.getParola() == parolaUtilizator) {
+                    std::cout << "Logare cu succes! Bine ati venit, " << numeUtilizator << "!\n";
 
-                        while (true) {
-                            std::cout << "Numele utilizatorului este: " << it->second.getNume() << std::endl;
-                            std::cout << "1. Vezi toate jocurile disponibile\n";
-                            std::cout << "2. Cumpara joc\n";
-                            std::cout << "3. Vezi balanta\n";
-                            std::cout << "4. Adauga fonduri\n";
-                            std::cout << "5. Exit\n";
-                            std::cin >> optiune;
+                    while (true) {
+                        std::cout << "Numele utilizatorului este: " << it->second.getNume() << std::endl;
+                        std::cout << "1. Vezi toate jocurile disponibile\n";
+                        std::cout << "2. Cumpara joc\n";
+                        std::cout << "3. Vezi balanta\n";
+                        std::cout << "4. Adauga fonduri\n";
+                        std::cout << "5. Afiseaza jocurile cumparate\n";
+                        std::cout << "6. Exit\n";
+                        std::cin >> optiune;
 
-                            if (optiune == 1) {
-                                magazin.afiseazaJocuri();
-                            } else if (optiune == 2) {
-                                magazin.afiseazaJocuri();
-                                std::cout << "Introduceti numarul jocului pe care doriti sa il cumparati: ";
-                                int indexJoc;
-                                std::cin >> indexJoc;
+                        if (optiune == 1) {
+                            magazin.afiseazaJocuri();
+                        } else if (optiune == 2) {
+                            magazin.afiseazaJocuri();
+                            std::cout << "Introduceti numarul jocului pe care doriti sa il cumparati: ";
+                            int indexJoc;
+                            std::cin >> indexJoc;
 
-                                if (indexJoc >= 1 &&
-                                    static_cast<std::size_t>(indexJoc) <= magazin.getJocuriDisponibile().size()) {
-                                    const JocVideo &jocCumparat = magazin.getJoc(indexJoc - 1);
-                                    double pretJoc = jocCumparat.getPret();
-                                    if (pretJoc <= it->second.getBalanta()) {
-                                        it->second.adaugaBani(-pretJoc);
-                                        std::cout << "Felicitari! Ati cumparat jocul " << jocCumparat.getNume()
-                                                  << "!\n";
-                                    } else {
-                                        std::cout << "Nu aveti suficienti bani pentru a cumpara acest joc.\n";
-                                    }
+                            if (indexJoc >= 1 &&
+                                static_cast<std::size_t>(indexJoc) <= magazin.getJocuriDisponibile().size()) {
+                                const JocVideo& jocCumparat = magazin.getJoc(indexJoc - 1);
+                                double pretJoc = jocCumparat.getPret();
+                                if (pretJoc <= it->second.getBalanta()) {
+                                    it->second.adaugaBani(-pretJoc);
+                                    it->second.adaugaJocCumparat(jocCumparat);
+                                    std::cout << "Felicitari! Ati cumparat jocul " << jocCumparat.getNume() << "!\n";
                                 } else {
-                                    std::cout << "Optiune invalida.\n";
+                                    std::cout << "Nu aveti suficienti bani pentru a cumpara acest joc.\n";
                                 }
-                            } else if (optiune == 3) {
-                                std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
-                            } else if (optiune == 4) {
-                                std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
-                                bool sumaValida = false;
-                                double suma;
-                                std::cin >> suma;
-
-                                while (!sumaValida) {
-                                    std::string input;
-                                    std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
-                                    std::cin >> input;
-
-                                    try {
-                                        size_t pos;
-                                        suma = std::stod(input, &pos);
-
-                                        if (pos == input.size()) {
-                                            // Verificam dacă toate caracterele din input sunt convertite la numar
-                                            sumaValida = true;
-                                        } else {
-                                            std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
-                                        }
-                                    } catch (const std::invalid_argument& e) {
-                                        std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
-                                    } catch (const std::out_of_range& e) {
-                                        std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
-                                    }
-
-                                    // Curatam buffer ul de intrare pentru a evita bucle nedorite
-                                    std::cin.clear();
-                                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                                }
-
-
-
-                                it->second.adaugaBani(suma);
-                                std::cout << "Balanta actualizata cu succes.\n";
-                            } else if (optiune == 5) {
-                                break;
                             } else {
                                 std::cout << "Optiune invalida.\n";
-                                break;
                             }
+                        } else if (optiune == 3) {
+                            std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
+                        } else if (optiune == 4) {
+                            double suma;
+                            do {
+                                std::string input;
+                                std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
+                                std::cin >> input;
+
+                                try {
+                                    size_t pos;
+                                    suma = std::stod(input, &pos);
+
+                                    if (pos == input.size()) {
+                                        break;
+                                    } else {
+                                        std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
+                                    }
+                                } catch (const std::invalid_argument& e) {
+                                    std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
+                                } catch (const std::out_of_range& e) {
+                                    std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
+                                }
+
+                                std::cin.clear();
+                                std::cin.ignore(std::numeric_limits<std::
+                                streamsize>::max(), '\n');
+                            } while (false);
+
+                            it->second.adaugaBani(suma);
+                            std::cout << "Balanta actualizata cu succes.\n";
+                        } else if (optiune == 5) {
+                            it->second.afiseazaJocuriCumparate();
+                        } else if (optiune == 6) {
+                            break;
+                        } else {
+                            std::cout << "Optiune invalida.\n";
+                            break;
                         }
-                    } else {
-                        std::cout << "Numele de utilizator sau parola incorecta. Va rugam sa incercati din nou.\n";
                     }
+                } else {
+                    std::cout << "Numele de utilizator sau parola incorecta. Va rugam sa incercati din nou.\n";
                 }
+            } else if (optiune == 2) {
+                std::string numeUtilizator, parolaUtilizator;
+                double balantaNoua;
+
+                bool balantaValida = false;
+                do {
+                    std::string input;
+                    std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
+                    std::cin >> input;
+
+                    try {
+                        size_t pos;
+                        balantaNoua = std::stod(input, &pos);
+
+                        if (pos == input.size()) {
+                            balantaValida = true;
+                        } else {
+                            std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
+                        }
+                    } catch (const std::invalid_argument& e) {
+                        std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
+                    } catch (const std::out_of_range& e) {
+                        std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
+                    }
+
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                } while (!balantaValida);
+
+                std::cout << "Introduceti numele de utilizator: ";
+                std::cin >> numeUtilizator;
+                auto it = utilizatoriMap.find(numeUtilizator);
+                if (it == utilizatoriMap.end()) {
+                    std::cout << "Introduceti parola: ";
+                    std::cin >> parolaUtilizator;
+                    Utilizator utilizatorNou(numeUtilizator, parolaUtilizator, balantaNoua);
+                    utilizatori.push_back(utilizatorNou);
+                    utilizatoriMap[numeUtilizator] = utilizatorNou;
+                    fisierUtilizatoriOut.open("utilizatori.txt", std::ios_base::app);
+                    fisierUtilizatoriOut << numeUtilizator << " " << parolaUtilizator << " " << balantaNoua << std::endl;
+                    fisierUtilizatoriOut.close();
+                    std::cout << "Cont creat cu succes!\n";
+                } else {
+                    std::cout << "Numele de utilizator este deja folosit. Va rugam sa alegeti alt nume de utilizator!\n";
+                }
+            } else if (optiune == 3) {
+                magazin.afiseazaJocuri();
+            } else if (optiune == 4) {
+                std::cout << "La revedere! Multumim ca ati folosit aplicatia noastra!\n";
+                break;
             } else {
                 std::cout << "Optiune invalida. Va rugam sa alegeti o optiune valida!\n";
             }
-        }     if (optiune == 2) {
-            std::string numeUtilizator, parolaUtilizator;
-            double balantaNoua;
-
-            bool balantaValida = false;
-
-            while (!balantaValida) {
-                std::string input;
-                std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
-                std::cin >> input;
-
-                try {
-                    size_t pos;
-                    balanta = std::stod(input, &pos);
-
-                    if (pos == input.size()) {
-                        balantaValida = true;
-                    } else {
-                        std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
-                    }
-                } catch (const std::invalid_argument& e) {
-                    std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
-                } catch (const std::out_of_range& e) {
-                    std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
-                }
-
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
-
-            std::cout << "Introduceti numele de utilizator: ";
-            std::cin >> numeUtilizator;
-            auto it = utilizatoriMap.find(numeUtilizator);
-            if (it == utilizatoriMap.end()) {
-                std::cout << "Introduceti parola: ";
-                std::cin >> parolaUtilizator;
-                std::cout << "Introduceti balanta initiala: ";
-                std::cin >> balantaNoua;
-                Utilizator utilizatorNou(numeUtilizator, parolaUtilizator, balantaNoua);
-                utilizatori.push_back(utilizatorNou);
-                utilizatoriMap[numeUtilizator] = utilizatorNou;
-                fisierUtilizatoriOut.open("utilizatori.txt", std::ios_base::app);
-                fisierUtilizatoriOut << numeUtilizator << " " << parolaUtilizator << " " << balantaNoua << std::endl;
-                fisierUtilizatoriOut.close();
-                std::cout << "Cont creat cu succes!\n";
-            } else {
-                std::cout << "Numele de utilizator este deja folosit. Va rugam sa alegeti alt nume de utilizator!\n";
-            }
-        } else if (optiune == 3) {
-            std::cout << "La revedere! Multumim ca ati folosit aplicatia noastra!\n";
-            break;
-        } else {
-            std::cout << "Optiune invalida. Va rugam sa alegeti o optiune valida!\n";
         }
-    }
+    } while (optiune != 4);
+
     fisierUtilizatoriIn.close();
     fisierUtilizatoriOut.close();
     return 0;

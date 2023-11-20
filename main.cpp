@@ -232,7 +232,7 @@ int main() {
 
                                 try {
                                     size_t pos;
-                                    std::stod(input, &pos);
+                                    [[maybe_unused]] const double suma = std::stod(input, &pos);
 
                                     if (pos == input.size()) {
                                         break;

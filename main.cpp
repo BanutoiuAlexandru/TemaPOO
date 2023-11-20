@@ -225,7 +225,6 @@ int main() {
                             std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
                             std::cout << "Balanta dumneavoastra: " << it->second.getBalantaFantoma() << std::endl;
                         } else if (optiuni == 4) {
-                            double suma;
                             do {
                                 std::string input;
                                 std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
@@ -233,7 +232,7 @@ int main() {
 
                                 try {
                                     size_t pos;
-                                    suma = std::stod(input, &pos);
+                                    std::stod(input, &pos);
 
                                     if (pos == input.size()) {
                                         break;
@@ -251,6 +250,7 @@ int main() {
                                 streamsize>::max(), '\n');
                             } while (false);
 
+                            const double suma=0.0;
                             it->second.adaugaBani(suma);
                             std::cout << "Balanta actualizata cu succes.\n";
                         } else if (optiuni == 5) {

@@ -159,7 +159,7 @@ int main() {
         magazin.adaugaJoc(joc);
     }
     fisierJocuri.close();
-
+    [[maybe_unused]] double balantaNoua;
     int optiune = 0;
     do{
         std::cout << "1. Logare\n";
@@ -265,7 +265,6 @@ int main() {
                 }
             } else if (optiune == 2) {
                 std::string numeUtilizator, parolaUtilizator;
-                double balantaNoua;
 
                 bool balantaValida = false;
                 do {

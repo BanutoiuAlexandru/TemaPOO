@@ -188,6 +188,7 @@ int main() {
                 if (it != utilizatoriMap.end() && it->second.getParola() == parolaUtilizator) {
                     std::cout << "Logare cu succes! Bine ati venit, " << numeUtilizator << "!\n";
 
+                    int optiuni = 0;
                     while (true) {
                         std::cout << "Numele utilizatorului este: " << it->second.getNume() << std::endl;
                         std::cout << "1. Vezi toate jocurile disponibile\n";
@@ -196,11 +197,11 @@ int main() {
                         std::cout << "4. Adauga fonduri\n";
                         std::cout << "5. Afiseaza jocurile cumparate\n";
                         std::cout << "6. Exit\n";
-                        std::cin >> optiune;
+                        std::cin >> optiuni;
 
-                        if (optiune == 1) {
+                        if (optiuni == 1) {
                             magazin.afiseazaJocuri();
-                        } else if (optiune == 2) {
+                        } else if (optiuni == 2) {
                             magazin.afiseazaJocuri();
                             std::cout << "Introduceti numarul jocului pe care doriti sa il cumparati: ";
                             int indexJoc;
@@ -220,10 +221,10 @@ int main() {
                             } else {
                                 std::cout << "Optiune invalida.\n";
                             }
-                        } else if (optiune == 3) {
+                        } else if (optiuni == 3) {
                             std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
                             std::cout << "Balanta dumneavoastra: " << it->second.getBalantaFantoma() << std::endl;
-                        } else if (optiune == 4) {
+                        } else if (optiuni == 4) {
                             double suma;
                             do {
                                 std::string input;
@@ -252,9 +253,9 @@ int main() {
 
                             it->second.adaugaBani(suma);
                             std::cout << "Balanta actualizata cu succes.\n";
-                        } else if (optiune == 5) {
+                        } else if (optiuni == 5) {
                             it->second.afiseazaJocuriCumparate();
-                        } else if (optiune == 6) {
+                        } else if (optiuni == 6) {
                             break;
                         } else {
                             std::cout << "Optiune invalida.\n";

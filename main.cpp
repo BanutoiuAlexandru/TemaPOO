@@ -222,6 +222,7 @@ int main() {
                             }
                         } else if (optiune == 3) {
                             std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
+                            std::cout << "Balanta dumneavoastra: " << it->second.getBalantaFantoma() << std::endl;
                         } else if (optiune == 4) {
                             double suma;
                             do {
@@ -238,9 +239,9 @@ int main() {
                                     } else {
                                         std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
                                     }
-                                } catch (const std::invalid_argument& e) {
+                                } catch (const std::invalid_argument& ) {
                                     std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
-                                } catch (const std::out_of_range& e) {
+                                } catch (const std::out_of_range& ) {
                                     std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
                                 }
 
@@ -282,9 +283,9 @@ int main() {
                         } else {
                             std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
                         }
-                    } catch (const std::invalid_argument& e) {
+                    } catch (const std::invalid_argument& ) {
                         std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
-                    } catch (const std::out_of_range& e) {
+                    } catch (const std::out_of_range& ) {
                         std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
                     }
 

@@ -268,42 +268,41 @@ int main() {
             }
         } else if (optiune == 2) {
             std::string numeUtilizator, parolaUtilizator;
+            double balantaNoua;
 
-            double balantaNoua= 0.0;
+            int numarIncercariMaxim = 3;
+            int numarIncercari = 0;
 
-            bool balantaValida = false;
-            do {
+            while (numarIncercari < numarIncercariMaxim) {
                 std::string input;
                 std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
-                std::getline(std::cin, input);
-                size_t found = input.find(' ');
-                while (found != std::string::npos) {
-                    input.erase(found, 1);
-                    found = input.find(' ');
-                }
+                std::cin >> input;
 
                 try {
                     size_t pos;
                     balantaNoua = std::stod(input, &pos);
 
                     if (pos == input.size()) {
-                        balantaValida = true;
+                        // Suma este validă, ieșim din buclă
+                        break;
                     } else {
                         std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
                     }
-                } catch (const std::invalid_argument&) {
+                } catch (const std::invalid_argument& ) {
                     std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
-                } catch (const std::out_of_range&) {
+                } catch (const std::out_of_range& ) {
                     std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
-                }
-
-                if (!balantaValida) {
-                    std::cout << "Suma introdusa contine spatii intre cifre. Va rugam sa reincercati.\n";
                 }
 
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            } while (!balantaValida);
+
+                numarIncercari++;
+                if (numarIncercari == numarIncercariMaxim) {
+                    std::cout << "Prea multe încercări nereușite. Iesire din buclă.\n";
+                    return 1; // Ieșim din funcție cu un cod de eroare
+                }
+            }
 
             std::cout << "Introduceti numele de utilizator: ";
             std::cin >> numeUtilizator;

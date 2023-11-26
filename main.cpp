@@ -160,7 +160,6 @@ int main() {
         magazin.adaugaJoc(joc);
     }
     fisierJocuri.close();
-
     int optiune = 0;
     do {
         std::cout << "1. Logare\n";
@@ -224,22 +223,25 @@ int main() {
                         std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
                         std::cout << "Balanta dumneavoastra: " << it->second.getBalantaFantoma() << std::endl;
                     } else if (optiune == 4) {
-
-                        double sumaNoua = 0.0;
-
-                        bool sumaValida = false;
-
                         do {
                             std::string input;
                             std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
-                            std::cin >> input;
+                            std::getline(std::cin, input);
+
+                            size_t found = input.find(' ');
+                            while (found != std::string::npos) {
+                                input.erase(found, 1);
+                                found = input.find(' ');
+                            }
 
                             try {
                                 size_t pos;
-                                sumaNoua = std::stod(input, &pos);
+                                const double suma = std::stod(input, &pos);
 
                                 if (pos == input.size()) {
-                                    sumaValida = true;
+                                    it->second.adaugaBani(suma);
+                                    std::cout << "Balanta actualizata cu succes.\n";
+                                    break;
                                 } else {
                                     std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
                                 }
@@ -249,14 +251,9 @@ int main() {
                                 std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
                             }
 
-                            if (!sumaValida) {
-                                std::cin.clear();
-                                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                            }
-                        } while (!sumaValida);
-
-                        it->second.adaugaBani(sumaNoua);
-                        std::cout << "Balanta actualizata cu succes. Noua balanta: " << it->second.getBalanta() << "\n";
+                            std::cin.clear();
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        } while (true);
                     } else if (optiune == 5) {
                         it->second.afiseazaJocuriCumparate();
                     } else if (optiune == 6) {
@@ -272,14 +269,18 @@ int main() {
         } else if (optiune == 2) {
             std::string numeUtilizator, parolaUtilizator;
 
-            double balantaNoua = 0.0;
+            double balantaNoua;
 
             bool balantaValida = false;
-
             do {
                 std::string input;
                 std::cout << "Introduceti suma pe care doriti sa o adaugati: ";
-                std::cin >> input;
+                std::getline(std::cin, input);
+                size_t found = input.find(' ');
+                while (found != std::string::npos) {
+                    input.erase(found, 1);
+                    found = input.find(' ');
+                }
 
                 try {
                     size_t pos;
@@ -291,16 +292,17 @@ int main() {
                         std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
                     }
                 } catch (const std::invalid_argument&) {
-                    std::cout <<
-                              "Suma invalida! Va rugam sa introduceti un numar real.\n";
+                    std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
                 } catch (const std::out_of_range&) {
                     std::cout << "Suma prea mare! Va rugam sa introduceti un numar mai mic.\n";
                 }
 
                 if (!balantaValida) {
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cout << "Suma introdusa contine spatii intre cifre. Va rugam sa reincercati.\n";
                 }
+
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             } while (!balantaValida);
 
             std::cout << "Introduceti numele de utilizator: ";
@@ -316,7 +318,8 @@ int main() {
                 fisierUtilizatoriOut << numeUtilizator << " " << parolaUtilizator << " " << balantaNoua << std::endl;
                 fisierUtilizatoriOut.close();
                 std::cout << "Cont creat cu succes!\n";
-            } else {
+            }
+            else {
                 std::cout << "Numele de utilizator este deja folosit. Va rugam sa alegeti alt nume de utilizator!\n";
             }
         } else if (optiune == 3) {

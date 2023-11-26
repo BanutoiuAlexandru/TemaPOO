@@ -268,7 +268,8 @@ int main() {
             }
         } else if (optiune == 2) {
             std::string numeUtilizator, parolaUtilizator;
-            double balantaNoua;
+
+            double balantaNoua = 0.0;
 
             int numarIncercariMaxim = 3;
             int numarIncercari = 0;

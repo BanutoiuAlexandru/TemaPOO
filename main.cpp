@@ -269,7 +269,7 @@ int main() {
         } else if (optiune == 2) {
             std::string numeUtilizator, parolaUtilizator;
 
-            double balantaNoua;
+            double balantaNoua= 0.0;
 
             bool balantaValida = false;
             do {

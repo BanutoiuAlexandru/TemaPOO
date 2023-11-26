@@ -224,7 +224,9 @@ int main() {
                         std::cout << "Balanta dumneavoastra: " << it->second.getBalanta() << std::endl;
                         std::cout << "Balanta dumneavoastra: " << it->second.getBalantaFantoma() << std::endl;
                     } else if (optiune == 4) {
-                        double sumaNoua;
+
+                        double sumaNoua = 0.0;
+
                         bool sumaValida = false;
 
                         do {
@@ -269,7 +271,9 @@ int main() {
             }
         } else if (optiune == 2) {
             std::string numeUtilizator, parolaUtilizator;
-            double balantaNoua;
+
+            double balantaNoua = 0.0;
+
             bool balantaValida = false;
 
             do {

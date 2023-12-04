@@ -1,4 +1,4 @@
-# OOP Template
+# Platforma cu jocuri 
 
 ### Tema 0
 

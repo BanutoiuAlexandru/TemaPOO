@@ -5,35 +5,31 @@
 #include <fstream>
 #include <limits>
 
-#ifdef _WIN32  ///-----Steluta la parola
+#ifdef _WIN32
 #include <conio.h>
 #else
 #include <termios.h>
 #include <unistd.h>
+#endif
+
+#ifdef _WIN32
 int getch() {
-    struct termios old, newt;
-    tcgetattr(STDIN_FILENO, &old);
-    newt = old;
-    newt.c_lflag &= ~ICANON;
-    newt.c_lflag &= ~ECHO;
-    newt.c_cc[VMIN] = 1;
-    newt.c_cc[VTIME] = 0;
-
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &newt) < 0) {
-        perror("tcsetattr");
-        return EOF;
-    }
-
-    int ch = getchar(); // Folosește getchar pentru a citi un singur caracter
-
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &old) < 0) {
-        perror("tcsetattr");
-        return EOF;
-    }
-
+    return _getch();
+}
+#else
+int getch() {
+    struct termios oldt, newt;
+    int ch;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     return ch;
 }
-#endif  //_WIN32
+#endif
+ //_WIN32
 
 class JocVideo {
 private:

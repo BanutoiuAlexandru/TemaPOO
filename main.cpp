@@ -17,6 +17,7 @@ int getch() {
     int ch;
 
     // Inițializare completă a structurii termios
+    memset(&oldt, 0, sizeof(oldt));
     memset(&newt, 0, sizeof(newt));
 
     tcgetattr(STDIN_FILENO, &oldt);

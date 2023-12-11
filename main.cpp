@@ -10,9 +10,7 @@
 #else
 #include <termios.h>
 #include <unistd.h>
-#endif
 
-#ifdef __linux__
 int getch() {
     struct termios oldt, newt;
     int ch;
@@ -24,7 +22,7 @@ int getch() {
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     return ch;
 }
-#endif //__linux__
+#endif//_WIN32
 
 class JocVideo {
 private:

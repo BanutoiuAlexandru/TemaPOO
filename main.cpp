@@ -11,33 +11,27 @@
 #include <termios.h>
 #include <unistd.h>
 int getch() {
-    int buf = 0;
-    struct termios old = {0};
+    struct termios old, newt;
+    tcgetattr(STDIN_FILENO, &old);
+    newt = old;
+    newt.c_lflag &= ~ICANON;
+    newt.c_lflag &= ~ECHO;
+    newt.c_cc[VMIN] = 1;
+    newt.c_cc[VTIME] = 0;
 
-    if (tcgetattr(0, &old) < 0)
-        perror("tcgetattr()");
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &newt) < 0) {
+        perror("tcsetattr");
+        return EOF;
+    }
 
-    old.c_iflag = 0;
-    old.c_oflag = 0;
-    old.c_cflag = 0;
-    old.c_lflag &= ~ICANON;
-    old.c_lflag &= ~ECHO;
-    old.c_cc[VMIN] = 1;
-    old.c_cc[VTIME] = 0;
+    int ch = getchar(); // Folosește getchar pentru a citi un singur caracter
 
-    if (tcsetattr(0, TCSANOW, &old) < 0)
-        perror("tcsetattr ICANON");
+    if (tcsetattr(STDIN_FILENO, TCSANOW, &old) < 0) {
+        perror("tcsetattr");
+        return EOF;
+    }
 
-    if (read(0, &buf, 1) < 0)
-        perror("read()");
-
-    old.c_lflag |= ICANON;
-    old.c_lflag |= ECHO;
-
-    if (tcsetattr(0, TCSADRAIN, &old) < 0)
-        perror("tcsetattr ~ICANON");
-
-    return (buf);
+    return ch;
 }
 #endif  //_WIN32
 

@@ -8,6 +8,8 @@
 #ifdef _WIN32  ///-----Steluta la parola
 #include <conio.h>
 #else
+#include <termios.h>
+#include <unistd.h>
 int getch() {
     int buf = 0;
     struct termios old = {0};

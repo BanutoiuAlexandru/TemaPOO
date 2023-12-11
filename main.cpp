@@ -16,15 +16,18 @@ int getch() {
     struct termios oldt, newt;
     int ch;
 
+    // Inițializare completă a structurii termios
+    memset(&newt, 0, sizeof(newt));
+
     tcgetattr(STDIN_FILENO, &oldt);
     newt = oldt;
     newt.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    read(STDIN_FILENO, &ch, 1);
+    ch = getchar();
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-
     return ch;
 }
+
 #endif//_WIN32
 
 class JocVideo {

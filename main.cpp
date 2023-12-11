@@ -12,11 +12,7 @@
 #include <unistd.h>
 #endif
 
-#ifdef _WIN32
-int getch() {
-    return _getch();
-}
-#else
+#ifdef __linux__
 int getch() {
     struct termios oldt, newt;
     int ch;
@@ -28,8 +24,7 @@ int getch() {
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     return ch;
 }
-#endif
- //_WIN32
+#endif //__linux__
 
 class JocVideo {
 private:

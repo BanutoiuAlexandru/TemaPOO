@@ -206,7 +206,7 @@ private:
     static void ascundeParola(std::string &parola) {
         int ch;
         while ((ch = getch()) != '\n' && ch != EOF) {
-            if (ch == 13) {  // Verificăm pentru codul ASCII al tastei Enter pe unele platforme
+            if (ch == 13) {
                 break;
             }
             std::cout << '*';
@@ -214,7 +214,7 @@ private:
         }
         std::cout << std::endl;
 
-        // Elimina caracterul newline din buffer
+
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 

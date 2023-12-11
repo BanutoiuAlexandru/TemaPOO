@@ -8,15 +8,16 @@
 #ifdef _WIN32  ///-----Steluta la parola
 #include <conio.h>
 #else
-#include <termios.h>
-#include <unistd.h>
 int getch() {
     int buf = 0;
     struct termios old = {0};
 
     if (tcgetattr(0, &old) < 0)
-        perror("tcsetattr()");
+        perror("tcgetattr()");
 
+    old.c_iflag = 0;
+    old.c_oflag = 0;
+    old.c_cflag = 0;
     old.c_lflag &= ~ICANON;
     old.c_lflag &= ~ECHO;
     old.c_cc[VMIN] = 1;

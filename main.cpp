@@ -5,6 +5,32 @@
 #include <fstream>
 #include <limits>
 
+#ifdef _WIN32  ///-----Steluta la parola
+#include <conio.h>
+#else
+#include <termios.h>
+#include <unistd.h>
+char getch() {
+    char buf = 0;
+    struct termios old = {0};
+    if (tcgetattr(0, &old) < 0)
+        perror("tcsetattr()");
+    old.c_lflag &= ~ICANON;
+    old.c_lflag &= ~ECHO;
+    old.c_cc[VMIN] = 1;
+    old.c_cc[VTIME] = 0;
+    if (tcsetattr(0, TCSANOW, &old) < 0)
+        perror("tcsetattr ICANON");
+    if (read(0, &buf, 1) < 0)
+        perror("read()");
+    old.c_lflag |= ICANON;
+    old.c_lflag |= ECHO;
+    if (tcsetattr(0, TCSADRAIN, &old) < 0)
+        perror("tcsetattr ~ICANON");
+    return (buf);
+}
+#endif  //_WIN32
+
 class JocVideo {
 private:
     std::string nume;
@@ -178,13 +204,28 @@ private:
         }
         fisierJocuri.close();
     }
+    static void ascundeParola(std::string &parola) {
+        int ch;
+        while ((ch = getch()) != '\n' && ch != EOF) {
+            if (ch == 13) {  // Verificăm pentru codul ASCII al tastei Enter pe unele platforme
+                break;
+            }
+            std::cout << '*';
+            parola.push_back(static_cast<char>(ch));
+        }
+        std::cout << std::endl;
+
+        // Elimina caracterul newline din buffer
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
 
     void logare() {
         std::string numeUtilizator, parolaUtilizator;
         std::cout << "Introduceti numele de utilizator: ";
         std::cin >> numeUtilizator;
         std::cout << "Introduceti parola: ";
-        std::cin >> parolaUtilizator;
+        ascundeParola(parolaUtilizator);
 
         auto it = utilizatoriMap.find(numeUtilizator);
         if (it != utilizatoriMap.end() && it->second.getParola() == parolaUtilizator) {
@@ -314,7 +355,7 @@ private:
         auto it = utilizatoriMap.find(numeUtilizator);
         if (it == utilizatoriMap.end()) {
             std::cout << "Introduceti parola: ";
-            std::cin >> parolaUtilizator;
+            ascundeParola(parolaUtilizator);
             Utilizator utilizatorNou(numeUtilizator, parolaUtilizator, balantaNoua);
             utilizatori.push_back(utilizatorNou);
             utilizatoriMap[numeUtilizator] = utilizatorNou;

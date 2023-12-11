@@ -36,6 +36,7 @@ private:
     std::string parola;
     double balanta;
     double* balantaFantoma;
+    std::vector<JocVideo> jocuriCumparate;
 
 public:
     Utilizator() : nume(), parola(), balanta(0.0), balantaFantoma(nullptr) {}
@@ -80,15 +81,30 @@ public:
         return balantaFantoma;
     }
 
-    void adaugaBani(double suma) {
-        balanta += suma;
+    void adaugaBani(double suma)
+    {if (suma >= 0.0) {
+            balanta += suma;
+            std::cout << "Balanta actualizata cu succes.\n";
+        } else {
+            std::cout << "Suma introdusa este invalida. Va rugam sa introduceti o valoare mai mare sau egala cu 0.\n";
+        }
     }
 
-    void adaugaJocCumparat([[maybe_unused]] const JocVideo& joc) {
+    void adaugaJocCumparat(const JocVideo& joc) {
+        jocuriCumparate.push_back(joc);
     }
 
     void afiseazaJocuriCumparate() const {
+        if (jocuriCumparate.empty()) {
+            std::cout << "Nu ati cumparat inca niciun joc.\n";
+        } else {
+            std::cout << "Jocuri Cumparate:\n";
+            for (const auto& joc : jocuriCumparate) {
+                std::cout << joc << std::endl;
+            }
+        }
     }
+
 
     friend std::ostream& operator<<(std::ostream& out, const Utilizator& utilizator);
 };
@@ -274,10 +290,9 @@ private:
                 balantaNoua = std::stod(input, &pos);
 
                 if (pos == input.size()) {
-                    break;
-                } else {
-                    std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
-                }
+                    break;}
+                else {
+                    std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";}
             } catch (const std::invalid_argument& ) {
                 std::cout << "Suma invalida! Va rugam sa introduceti un numar real.\n";
             } catch (const std::out_of_range& ) {
@@ -357,6 +372,9 @@ public:
         } while (optiune != 4);
     }
 };
+
+
+
 int main() {
     Aplicatie aplicatie;
     aplicatie.run();

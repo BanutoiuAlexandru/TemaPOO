@@ -10,10 +10,14 @@
 #else
 #include <termios.h>
 #include <unistd.h>
+#include <cstring>
 
 int getch() {
     struct termios oldt, newt;
     int ch;
+
+    memset(&newt, 0, sizeof(newt));
+
     tcgetattr(STDIN_FILENO, &oldt);
     newt = oldt;
     newt.c_lflag &= ~(ICANON | ECHO);
@@ -22,6 +26,7 @@ int getch() {
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     return ch;
 }
+
 #endif//_WIN32
 
 class JocVideo {

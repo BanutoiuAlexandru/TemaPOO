@@ -90,7 +90,24 @@ endfunction()
 ###############################################################################
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp
+        JOcVideo.cpp
+        JocVideo.hpp
+        JocAventura.hpp
+        JocAventura.cpp
+        JocActiune.cpp
+        JocActiune.hpp
+        JocStrategie.hpp
+        JocStrategie.cpp
+        Utilizator.hpp
+        Utilizator.cpp
+        Magazin.hpp
+        Magazin.cpp
+        Aplicatie.hpp
+        Aplicatie.cpp
+        JocRPG.hpp
+        JocRPG.cpp
+)
 
 ###############################################################################
 

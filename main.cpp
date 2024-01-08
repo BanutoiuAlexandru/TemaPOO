@@ -5,31 +5,6 @@
 #include <fstream>
 #include <limits>
 
-#ifdef _WIN32
-#include <conio.h>
-#else
-#include <termios.h>
-#include <unistd.h>
-#include <cstring>
-
-int getch() {
-    struct termios oldt, newt;
-    int ch;
-
-    memset(&oldt, 0, sizeof(oldt));
-    memset(&newt, 0, sizeof(newt));
-
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    ch = getchar();
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-    return ch;
-}
-
-#endif//_WIN32
-
 class JocVideo {
 private:
     std::string nume;
@@ -203,28 +178,13 @@ private:
         }
         fisierJocuri.close();
     }
-    static void ascundeParola(std::string &parola) {
-        int ch;
-        while ((ch = getch()) != '\n' && ch != EOF) {
-            if (ch == 13) {
-                break;
-            }
-            std::cout << '*';
-            parola.push_back(static_cast<char>(ch));
-        }
-        std::cout << std::endl;
-
-
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-
 
     void logare() {
         std::string numeUtilizator, parolaUtilizator;
         std::cout << "Introduceti numele de utilizator: ";
         std::cin >> numeUtilizator;
         std::cout << "Introduceti parola: ";
-        ascundeParola(parolaUtilizator);
+        std::cin >> parolaUtilizator;
 
         auto it = utilizatoriMap.find(numeUtilizator);
         if (it != utilizatoriMap.end() && it->second.getParola() == parolaUtilizator) {
@@ -354,7 +314,7 @@ private:
         auto it = utilizatoriMap.find(numeUtilizator);
         if (it == utilizatoriMap.end()) {
             std::cout << "Introduceti parola: ";
-            ascundeParola(parolaUtilizator);
+            std::cin >> parolaUtilizator;
             Utilizator utilizatorNou(numeUtilizator, parolaUtilizator, balantaNoua);
             utilizatori.push_back(utilizatorNou);
             utilizatoriMap[numeUtilizator] = utilizatorNou;

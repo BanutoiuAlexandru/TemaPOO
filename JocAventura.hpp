@@ -1,5 +1,3 @@
-// JocAventura.hpp
-
 #ifndef JOC_AVENTURA_HPP
 #define JOC_AVENTURA_HPP
 

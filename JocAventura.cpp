@@ -1,5 +1,3 @@
-// JocAventura.cpp
-
 #include "JocAventura.hpp"
 #include <iostream>
 #include <utility>
@@ -8,7 +6,7 @@
         : JocVideo(nume, pret), tipAventura(std::move(tipAventura)) {}
 
 [[maybe_unused]] void JocAventura::ruleaza() const {
-    // Implementare pentru ruleaza, dacă este necesar
+
 }
 
 [[maybe_unused]] void JocAventura::afiseazaDetalii() const {

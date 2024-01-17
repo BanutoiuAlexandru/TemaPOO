@@ -14,6 +14,6 @@ double JocVideo::getPret() const {
     return pret;
 }
 
-[[maybe_unused]] [[maybe_unused]] void JocVideo::incepeJoc() const {
+[[maybe_unused]] [[maybe_unused]] [[maybe_unused]] void JocVideo::incepeJoc() const {
     std::cout << "Incepe jocul generic: " << nume << std::endl;
 }

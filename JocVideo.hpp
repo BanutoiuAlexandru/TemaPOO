@@ -5,7 +5,7 @@
 
 class JocVideo {
 public:
-   // JocVideo(const std::string& nume, double pret);
+    JocVideo(const std::string& nume, double pret);
 
     JocVideo(std::string nume, double pret);
 
@@ -14,8 +14,8 @@ public:
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] double getPret() const;
 
-
     [[nodiscard]] virtual JocVideo* clone() const = 0;
+    virtual void afiseazaDetalii() const = 0;
 
 private:
     std::string nume;

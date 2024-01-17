@@ -21,25 +21,6 @@ void Aplicatie::incarcaUtilizatori() {
     fisierUtilizatori.close();
 }
 
-/*void Aplicatie::incarcaJocuri() {
-
-    std::ifstream fisierJocuri("jocuri.txt");
-    std::string numeJoc;
-    double pret;
-    std::string tipJoc;
-    while (fisierJocuri >> numeJoc >> pret >> tipJoc) {
-        JocVideo* joc = nullptr;
-        if (tipJoc == "RPG") {
-            joc = new JocRPG(numeJoc, pret);
-        } else {
-            joc = new JocVideo(numeJoc, pret);
-        }
-
-        magazin.adaugaJoc(joc);
-    }
-    fisierJocuri.close();
-}
-*/
 void Aplicatie::logare() {
     std::string numeUtilizator, parolaUtilizator;
     std::cout << "Introduceti numele de utilizator: ";
@@ -76,7 +57,10 @@ void Aplicatie::logare() {
                     double pretJoc = jocCumparat->getPret();
                     if (pretJoc <= it->second.getBalanta()) {
                         it->second.adaugaBani(-pretJoc);
-                        it->second.adaugaJocCumparat(*jocCumparat);
+
+                        JocVideo* jocCumparatClone = jocCumparat->clone();
+                        it->second.adaugaJocCumparat(jocCumparatClone);
+
                         std::cout << "Felicitari! Ati cumparat jocul " << jocCumparat->getNume() << "!\n";
                     } else {
                         std::cout << "Nu aveti suficienti bani pentru a cumpara acest joc.\n";

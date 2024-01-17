@@ -10,7 +10,7 @@ private:
 public:
     [[maybe_unused]] JocStrategie(std::string& nume, double pret, std::string& tipStrategie);
 
-    void afiseazaDetalii() const override;
+    [[maybe_unused]] void afiseazaDetalii() const override;
 
     [[maybe_unused]] [[maybe_unused]] [[nodiscard]] static JocVideo* clone() ;
 };

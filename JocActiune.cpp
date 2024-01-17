@@ -1,10 +1,10 @@
 #include "JocActiune.hpp"
 #include <iostream>
 
-void JocActiune::ruleaza() const {
+[[maybe_unused]] void JocActiune::ruleaza() const {
 }
 
-void JocActiune::afiseazaDetalii() const {
+[[maybe_unused]] void JocActiune::afiseazaDetalii() const {
     std::cout << "Nume Joc: " << getNume() << ", Pret: " << getPret() << ", Nivel Dificultate: " << nivelDificultate << std::endl;
 }
 

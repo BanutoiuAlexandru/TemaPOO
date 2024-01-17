@@ -11,9 +11,9 @@ public:
     [[maybe_unused]] JocActiune(const std::string& nume, double pret, std::string  dificultate)
             : JocVideo(nume, pret), nivelDificultate(std::move(dificultate)) {}
 
-    [[maybe_unused]] void ruleaza() const override;
+    [[maybe_unused]] void ruleaza() const ;
 
-    [[maybe_unused]] void afiseazaDetalii() const override;
+    [[maybe_unused]] void afiseazaDetalii() const ;
 
-    [[maybe_unused]] [[nodiscard]] JocVideo* clone() const ;
+    [[maybe_unused]] [[nodiscard]] JocVideo* clone() const override ;
 };

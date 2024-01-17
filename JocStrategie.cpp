@@ -8,10 +8,6 @@
     std::cout << "Nume Joc: " << getNume() << ", Pret: " << getPret() << ", Tip Strategie: " << tipStrategie << std::endl;
 }
 
-[[maybe_unused]] JocVideo *JocStrategie::clone() {
-    return nullptr;
+JocStrategie * JocStrategie::clone() const {
+    return new JocStrategie(*this);
 }
-
-//[[maybe_unused]] JocVideo* JocStrategie::clone() const {
-  //  return new JocStrategie(*this);
-//}
